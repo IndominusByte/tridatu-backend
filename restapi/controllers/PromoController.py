@@ -45,6 +45,12 @@ class PromoCrud:
 
 class PromoFetch:
     @staticmethod
+    async def search_promos_by_name(q: str, limit: int) -> list:
+        query = select([promo]).where(promo.c.name.ilike(f"%{q}%")).limit(limit)
+        promo_db = await database.fetch_all(query=query)
+        return [{index:value for index,value in item.items()} for item in promo_db]
+
+    @staticmethod
     async def filter_by_slug(slug: str) -> promo:
         query = select([promo]).where(promo.c.slug == slug)
         return await database.fetch_one(query=query)

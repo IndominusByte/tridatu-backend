@@ -1,14 +1,16 @@
-from fastapi import APIRouter, Path, Depends, HTTPException
+from fastapi import APIRouter, Query, Path, Depends, HTTPException
 from fastapi_jwt_auth import AuthJWT
 from controllers.PromoController import PromoFetch, PromoCrud, PromoLogic
 from controllers.UserController import UserFetch
 from dependencies.PromoDependant import create_form_promo, update_form_promo
+from schemas.promos.PromoSchema import PromoSearchByName
 from libs.MagicImage import MagicImage
 from localization import LocalizationRoute
 from I18N import HttpError, ResponseMessages
 from config import settings
 from pytz import timezone
 from slugify import slugify
+from typing import List
 
 router = APIRouter(route_class=LocalizationRoute)
 # default language response
@@ -70,9 +72,9 @@ async def create_promo(form_data: create_form_promo = Depends(), authorize: Auth
 # async def get_all_promos():
 #     pass
 
-# @router.get('/search-by-name')
-# async def search_promos_by_name(q: str = Query(...,min_length=1), limit: int = Query(...,gt=0)):
-#     pass
+@router.get('/search-by-name',response_model=List[PromoSearchByName])
+async def search_promos_by_name(q: str = Query(...,min_length=1), limit: int = Query(...,gt=0)):
+    return await PromoFetch.search_promos_by_name(q=q,limit=limit)
 
 # @router.get('/{slug}')
 # async def get_promos_by_slug(slug: str = Path(...,min_length=1)):

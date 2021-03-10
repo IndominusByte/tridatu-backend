@@ -298,6 +298,34 @@ class TestPromo(OperationTest):
         assert response.status_code == 400
         assert response.json() == {"detail":"The name has already been taken."}
 
+    def test_search_promos_by_name(self,client):
+        url = self.prefix + '/search-by-name'
+        # field required
+        response = client.get(url)
+        assert response.status_code == 422
+        for x in response.json()['detail']:
+            if x['loc'][-1] == 'q': assert x['msg'] == 'field required'
+            if x['loc'][-1] == 'limit': assert x['msg'] == 'field required'
+        # all field blank
+        response = client.get(url + '?q=&limit=0')
+        assert response.status_code == 422
+        for x in response.json()['detail']:
+            if x['loc'][-1] == 'q': assert x['msg'] == 'ensure this value has at least 1 characters'
+            if x['loc'][-1] == 'limit': assert x['msg'] == 'ensure this value is greater than 0'
+        # check all field type data
+        response = client.get(url + '?q=123&limit=asd')
+        assert response.status_code == 422
+        for x in response.json()['detail']:
+            if x['loc'][-1] == 'limit': assert x['msg'] == 'value is not a valid integer'
+
+        response = client.get(url + '?q=t&limit=1')
+        assert response.status_code == 200
+        assert len(response.json()) == 1
+
+        # check data exists and type data
+        assert type(response.json()[0]['id']) == str
+        assert type(response.json()[0]['name']) == str
+
     def test_validation_update_promo(self,client):
         url = self.prefix + '/update/'
 
