@@ -305,6 +305,7 @@ class TestDiscount(OperationTest):
         assert type(response.json()['data'][0]['products_discount_status']) == str
         assert type(response.json()['data'][0]['variants_min_price']) == str
         assert type(response.json()['data'][0]['variants_max_price']) == str
+        assert type(response.json()['data'][0]['variants_total_stock']) == str
         assert type(response.json()['data'][0]['variants_discount']) == int
 
     def test_validation_get_discount_product(self,client):

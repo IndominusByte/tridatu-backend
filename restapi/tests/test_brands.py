@@ -132,6 +132,17 @@ class TestBrand(OperationTest):
 
     def test_get_all_brands(self,client):
         url = self.prefix + '/all-brands'
+        # all field blank
+        response = client.get(url + '?q=')
+        assert response.status_code == 422
+        for x in response.json()['detail']:
+            if x['loc'][-1] == 'q': assert x['msg'] == 'ensure this value has at least 1 characters'
+
+        # with search
+        response = client.get(url + '?q=t')
+        assert response.status_code == 200
+        assert response.json() != []
+        # without search
         response = client.get(url)
         assert response.status_code == 200
         assert response.json() != []

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile, Path, Form, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, Query, Path, Form, HTTPException
 from fastapi_jwt_auth import AuthJWT
 from controllers.BrandController import BrandCrud, BrandFetch
 from controllers.UserController import UserFetch
@@ -64,8 +64,8 @@ async def create_brand(
     return ResponseMessages[lang]['create_brand'][201]
 
 @router.get('/all-brands',response_model=List[BrandSchema])
-async def get_all_brands():
-    return await BrandFetch.get_all_brands()
+async def get_all_brands(q: str = Query(None,min_length=1)):
+    return await BrandFetch.get_all_brands(q)
 
 @router.get('/get-brand/{brand_id}',response_model=BrandSchema,
     responses={

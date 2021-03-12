@@ -78,6 +78,7 @@ class ProductFetch:
             func.min(variant.c.price).label('min_price'),
             func.max(variant.c.price).label('max_price'),
             func.max(variant.c.discount).label('discount'),
+            func.sum(variant.c.stock).label('total_stock'),
             variant.c.product_id
         ]).group_by(variant.c.product_id).alias('variants')
 
@@ -98,6 +99,7 @@ class ProductFetch:
             func.min(variant.c.price).label('min_price'),
             func.max(variant.c.price).label('max_price'),
             func.max(variant.c.discount).label('discount'),
+            func.sum(variant.c.stock).label('total_stock'),
             variant.c.product_id
         ]).group_by(variant.c.product_id).alias('variants')
 
@@ -138,7 +140,8 @@ class ProductFetch:
             func.min(variant.c.price).label('min_price'),
             func.max(variant.c.price).label('max_price'),
             func.max(variant.c.discount).label('discount'),
-            func.max(variant.c.stock).label('stock'),
+            func.max(variant.c.stock).label('max_stock'),
+            func.sum(variant.c.stock).label('total_stock'),
             variant.c.product_id
         ]).group_by(variant.c.product_id).alias('variants')
 
@@ -172,7 +175,7 @@ class ProductFetch:
             if kwargs['pre_order'] is True:
                 query = query.where(product_alias.c.products_preorder.isnot(None))
             if kwargs['pre_order'] is False:
-                query = query.where(product_alias.c.variants_stock > 0)
+                query = query.where(product_alias.c.variants_max_stock > 0)
         if kwargs['condition'] is not None:
             query = query.where(product_alias.c.products_condition == kwargs['condition'])
         if kwargs['wholesale'] is True:

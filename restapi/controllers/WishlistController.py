@@ -38,6 +38,7 @@ class WishlistFetch:
             func.min(variant.c.price).label('min_price'),
             func.max(variant.c.price).label('max_price'),
             func.max(variant.c.discount).label('discount'),
+            func.sum(variant.c.stock).label('total_stock'),
             variant.c.product_id
         ]).group_by(variant.c.product_id).alias('variants')
 

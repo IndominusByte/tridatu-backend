@@ -1,6 +1,7 @@
 from config import database
 from sqlalchemy.sql import select
 from models.BrandModel import brand
+from typing import Optional
 
 class BrandLogic:
     pass
@@ -20,8 +21,11 @@ class BrandCrud:
 
 class BrandFetch:
     @staticmethod
-    async def get_all_brands() -> brand:
-        return await database.fetch_all(query=select([brand]))
+    async def get_all_brands(q: Optional[str]) -> brand:
+        query = select([brand])
+        if q: query = query.where(brand.c.name.ilike(f"%{q}%"))
+
+        return await database.fetch_all(query=query)
 
     @staticmethod
     async def filter_by_name(name: str) -> brand:

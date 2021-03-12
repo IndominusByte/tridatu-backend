@@ -99,6 +99,7 @@ class DiscountData(DiscountSchema):
 
     variants_min_price: str
     variants_max_price: str
+    variants_total_stock: str
     variants_discount: int
 
     @validator('products_image_product',pre=True)

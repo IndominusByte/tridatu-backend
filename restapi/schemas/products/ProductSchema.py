@@ -15,12 +15,14 @@ class ProductData(ProductSchema):
     products_live: bool
     products_love: bool
     products_wholesale: bool
+    products_visitor: str
     products_discount_status: Literal['ongoing','will_come','not_active','have_ended']
     products_created_at: datetime
     products_updated_at: datetime
 
     variants_min_price: str
     variants_max_price: str
+    variants_total_stock: str
     variants_discount: int
 
     @validator('products_image_product',pre=True)
